@@ -1,4 +1,4 @@
-package Client
+package MyClient
 public
 	with Base_Types;
 	
@@ -32,6 +32,20 @@ public
 			sender_out: port sender.out_data -> out_data;
 	end my_client_process_sender.impl;
 	
+	system my_client
+		features 
+			out_data: out data port Base_Types::Integer;
+	end my_client;
+		
+	system implementation my_client.impl
+		subcomponents
+			sender: process my_client_process_sender.impl;
+		connections
+			sender_out: port sender.out_data -> out_data;
+	end my_client.impl;
+	
+	---------------------------------------------------------------------
+	
 	subprogram my_client_subprogram_receiver
 		features
 			in_data: in parameter Base_Types::Integer;
@@ -39,7 +53,7 @@ public
 	
 	thread my_client_thread_receiver
 		features
-			in_data: in event data port Base_Types::Integer;
+			in_data: in data port Base_Types::Integer;
 	end my_client_thread_receiver;
 	
 	thread implementation my_client_thread_receiver.impl
@@ -52,7 +66,7 @@ public
 	
 	process my_client_process_receiver
 		features
-			in_data: in event data port Base_Types::Integer;
+			in_data: in data port Base_Types::Integer;
 	end my_client_process_receiver;
 	
 	process implementation my_client_process_receiver.impl
@@ -62,18 +76,17 @@ public
 			receiver_in: port in_data -> receiver.in_data;
 	end my_client_process_receiver.impl;
 	
-	system my_client
+	system my_client_receiver
 		features 
 			out_data: out data port Base_Types::Integer;
-			in_data: in event data port Base_Types::Integer;
-	end my_client;
+			in_data: in data port Base_Types::Integer;
+	end my_client_receiver;
 		
-	system implementation my_client.impl
+	system implementation my_client_receiver.impl
 		subcomponents
-			sender: process my_client_process_sender.impl;
 			receiver: process my_client_process_receiver.impl;
 		connections
-			sender_out: port sender.out_data -> out_data;
 			receiver_in: port in_data -> receiver.in_data;
-	end my_client.impl;
-end Client;
+	end my_client_receiver.impl;
+	
+end MyClient;

@@ -1,17 +1,18 @@
 package FullSystem
 public
-	with Client, Server;
+	with MyClient, MyServer;
 	
 	system full_system
 	end full_system;
 	
 	system implementation full_system.impl
 		subcomponents
-			my_client: system Client::my_client.impl;
-			my_server: system Server::my_server.impl;
+			my_client: system MyClient::my_client.impl;
+			my_server: system MyServer::my_server.impl;
+			my_client_receiver: system MyClient::my_client_receiver.impl;
 		connections
 			client_to_server: port my_client.out_data -> my_server.in_data;
-			server_to_client: port my_server.out_data -> my_client.in_data;
+			server_to_client: port my_server.out_data -> my_client_receiver.in_data;
 	end full_system.impl;
 	
 end FullSystem;

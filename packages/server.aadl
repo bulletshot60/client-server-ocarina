@@ -1,4 +1,4 @@
-package Server
+package MyServer
 public
 	with Base_Types;
 	
@@ -51,4 +51,4 @@ public
 			processor_out: port request_processor.out_data -> out_data;
 	end my_server.impl;
 	
-end Server;
+end MyServer;
