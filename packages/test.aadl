@@ -1,0 +1,27 @@
+package Test
+public
+
+ data number
+ end number;
+
+ subprogram mul
+  features
+   x : in parameter number;
+   y : in parameter number;
+   z : out parameter number;
+ end mul;
+
+ subprogram cube
+  features
+   x : in parameter number;
+   y : out parameter number;
+   mul : requires subprogram access mul;
+
+   annex behavior_specification {**
+    states start  : initial state;
+           fin    : final state;
+    transitions t : start -[ ]-> fin;
+   **};
+  end cube;
+
+end Test;
