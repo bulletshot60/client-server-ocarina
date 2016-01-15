@@ -1,142 +1,14 @@
 package FullSystem
 public
-	with Base_Types;
-	
-	subprogram my_client_subprogram_sender
-		features
-			out_data: out parameter Base_Types::Integer;
-	end my_client_subprogram_sender;
-	
-	thread my_client_thread_sender
-		features
-			out_data: out data port Base_Types::Integer;
-	end my_client_thread_sender;
-	
-	thread implementation my_client_thread_sender.impl
-		calls K : {
-			sender: subprogram my_client_subprogram_sender;
-		};
-		connections
-			sender_out: parameter sender.out_data -> out_data;
-	end my_client_thread_sender.impl;
-	
-	process my_client_process_sender
-		features
-			out_data: out data port Base_Types::Integer;
-	end my_client_process_sender;
-	
-	process implementation my_client_process_sender.impl
-		subcomponents
-			sender: thread my_client_thread_sender.impl;
-		connections
-			sender_out: port sender.out_data -> out_data;
-	end my_client_process_sender.impl;
-	
-	subprogram my_client_subprogram_receiver
-		features
-			in_data: in parameter Base_Types::Integer;
-	end my_client_subprogram_receiver;
-	
-	thread my_client_thread_receiver
-		features
-			in_data: in event data port Base_Types::Integer;
-	end my_client_thread_receiver;
-	
-	thread implementation my_client_thread_receiver.impl
-		calls K : {
-			receiver: subprogram my_client_subprogram_receiver;
-		};
-		connections
-			receiver_in: parameter in_data -> receiver.in_data;
-	end my_client_thread_receiver.impl;
-	
-	process my_client_process_receiver
-		features
-			in_data: in event data port Base_Types::Integer;
-	end my_client_process_receiver;
-	
-	process implementation my_client_process_receiver.impl
-		subcomponents
-			receiver: thread my_client_thread_receiver.impl;
-		connections
-			receiver_in: port in_data -> receiver.in_data;
-	end my_client_process_receiver.impl;
-	
-	system my_client
-		features 
-			out_data: out data port Base_Types::Integer;
-			in_data: in event data port Base_Types::Integer;
-	end my_client;
-		
-	system implementation my_client.impl
-		subcomponents
-			sender: process my_client_process_sender.impl;
-			receiver: process my_client_process_receiver.impl;
-		connections
-			sender_out: port sender.out_data -> out_data;
-			receiver_in: port in_data -> receiver.in_data;
-	end my_client.impl;
-	
-	-------------------------------------------------------------------------
-	
-	subprogram my_server_subprogram
-		features 
-			in_data: in parameter Base_Types::Integer;
-			out_data: out parameter Base_Types::Integer;
-	end my_server_subprogram;
-	
-	thread my_server_thread
-		features 
-			in_data: in data port Base_Types::Integer;
-			out_data: out data port Base_Types::Integer;
-	end my_server_thread;
-	
-	thread implementation my_server_thread.impl
-		calls K : {
-			request_processor: subprogram my_server_subprogram;
-		};
-		connections
-			processor_in: parameter in_data -> request_processor.in_data;
-			processor_out: parameter request_processor.out_data -> out_data;
-	end my_server_thread.impl;
-	
-	process my_server_process
-		features 
-			in_data: in data port Base_Types::Integer;
-			out_data: out data port Base_Types::Integer;
-	end my_server_process;
-	
-	process implementation my_server_process.impl
-		subcomponents
-			request_processor: thread my_server_thread.impl;
-		connections
-			processor_in: port in_data -> request_processor.in_data;
-			processor_out: port request_processor.out_data -> out_data;
-	end my_server_process.impl;
-	
-	system my_server
-		features 
-			in_data: in data port Base_Types::Integer;
-			out_data: out data port Base_Types::Integer;
-	end my_server;
-		
-	system implementation my_server.impl
-		subcomponents
-			request_processor: process my_server_process.impl;
-		connections
-			processor_in: port in_data -> request_processor.in_data;
-			processor_out: port request_processor.out_data -> out_data;
-	end my_server.impl;
-	
-	-------------------------------------------------------------------------
+	with Client, Server;
 	
 	system full_system
 	end full_system;
 	
 	system implementation full_system.impl
 		subcomponents
-			my_client: system my_client.impl;
-			my_server: system my_server.impl;
+			my_client: system Client::my_client.impl;
+			my_server: system Server::my_server.impl;
 		connections
 			client_to_server: port my_client.out_data -> my_server.in_data;
 			server_to_client: port my_server.out_data -> my_client.in_data;

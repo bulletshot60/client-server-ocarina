@@ -1,0 +1,79 @@
+package Client
+public
+	with Base_Types;
+	
+	subprogram my_client_subprogram_sender
+		features
+			out_data: out parameter Base_Types::Integer;
+	end my_client_subprogram_sender;
+	
+	thread my_client_thread_sender
+		features
+			out_data: out data port Base_Types::Integer;
+	end my_client_thread_sender;
+	
+	thread implementation my_client_thread_sender.impl
+		calls K : {
+			sender: subprogram my_client_subprogram_sender;
+		};
+		connections
+			sender_out: parameter sender.out_data -> out_data;
+	end my_client_thread_sender.impl;
+	
+	process my_client_process_sender
+		features
+			out_data: out data port Base_Types::Integer;
+	end my_client_process_sender;
+	
+	process implementation my_client_process_sender.impl
+		subcomponents
+			sender: thread my_client_thread_sender.impl;
+		connections
+			sender_out: port sender.out_data -> out_data;
+	end my_client_process_sender.impl;
+	
+	subprogram my_client_subprogram_receiver
+		features
+			in_data: in parameter Base_Types::Integer;
+	end my_client_subprogram_receiver;
+	
+	thread my_client_thread_receiver
+		features
+			in_data: in event data port Base_Types::Integer;
+	end my_client_thread_receiver;
+	
+	thread implementation my_client_thread_receiver.impl
+		calls K : {
+			receiver: subprogram my_client_subprogram_receiver;
+		};
+		connections
+			receiver_in: parameter in_data -> receiver.in_data;
+	end my_client_thread_receiver.impl;
+	
+	process my_client_process_receiver
+		features
+			in_data: in event data port Base_Types::Integer;
+	end my_client_process_receiver;
+	
+	process implementation my_client_process_receiver.impl
+		subcomponents
+			receiver: thread my_client_thread_receiver.impl;
+		connections
+			receiver_in: port in_data -> receiver.in_data;
+	end my_client_process_receiver.impl;
+	
+	system my_client
+		features 
+			out_data: out data port Base_Types::Integer;
+			in_data: in event data port Base_Types::Integer;
+	end my_client;
+		
+	system implementation my_client.impl
+		subcomponents
+			sender: process my_client_process_sender.impl;
+			receiver: process my_client_process_receiver.impl;
+		connections
+			sender_out: port sender.out_data -> out_data;
+			receiver_in: port in_data -> receiver.in_data;
+	end my_client.impl;
+end Client;
