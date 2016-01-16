@@ -1,17 +1,22 @@
 package MyServer
 public
-	with Base_Types;
+	with FullSystem;
 	
 	subprogram my_server_subprogram
 		features 
-			in_data: in parameter Base_Types::Integer;
-			out_data: out parameter Base_Types::Integer;
+			in_data: in parameter FullSystem::Integer_Type;
+			out_data: out parameter FullSystem::Integer_Type;
 	end my_server_subprogram;
+	
+	subprogram implementation my_server_subprogram.impl
+		connections
+			in_to_out: parameter in_data -> out_data;
+	end my_server_subprogram.impl;
 	
 	thread my_server_thread
 		features 
-			in_data: in data port Base_Types::Integer;
-			out_data: out data port Base_Types::Integer;
+			in_data: in data port FullSystem::Integer_Type;
+			out_data: out data port FullSystem::Integer_Type;
 	end my_server_thread;
 	
 	thread implementation my_server_thread.impl
@@ -25,8 +30,8 @@ public
 	
 	process my_server_process
 		features 
-			in_data: in data port Base_Types::Integer;
-			out_data: out data port Base_Types::Integer;
+			in_data: in data port FullSystem::Integer_Type;
+			out_data: out data port FullSystem::Integer_Type;
 	end my_server_process;
 	
 	process implementation my_server_process.impl
@@ -36,19 +41,5 @@ public
 			processor_in: port in_data -> request_processor.in_data;
 			processor_out: port request_processor.out_data -> out_data;
 	end my_server_process.impl;
-	
-	system my_server
-		features 
-			in_data: in data port Base_Types::Integer;
-			out_data: out data port Base_Types::Integer;
-	end my_server;
-		
-	system implementation my_server.impl
-		subcomponents
-			request_processor: process my_server_process.impl;
-		connections
-			processor_in: port in_data -> request_processor.in_data;
-			processor_out: port request_processor.out_data -> out_data;
-	end my_server.impl;
 	
 end MyServer;

@@ -1,15 +1,15 @@
 package MyClient
 public
-	with Base_Types;
+	with FullSystem;
 	
 	subprogram my_client_subprogram_sender
 		features
-			out_data: out parameter Base_Types::Integer;
+			out_data: out parameter FullSystem::Integer_Type;
 	end my_client_subprogram_sender;
 	
 	thread my_client_thread_sender
 		features
-			out_data: out data port Base_Types::Integer;
+			out_data: out data port FullSystem::Integer_Type;
 	end my_client_thread_sender;
 	
 	thread implementation my_client_thread_sender.impl
@@ -22,7 +22,7 @@ public
 	
 	process my_client_process_sender
 		features
-			out_data: out data port Base_Types::Integer;
+			out_data: out data port FullSystem::Integer_Type;
 	end my_client_process_sender;
 	
 	process implementation my_client_process_sender.impl
@@ -32,28 +32,16 @@ public
 			sender_out: port sender.out_data -> out_data;
 	end my_client_process_sender.impl;
 	
-	system my_client
-		features 
-			out_data: out data port Base_Types::Integer;
-	end my_client;
-		
-	system implementation my_client.impl
-		subcomponents
-			sender: process my_client_process_sender.impl;
-		connections
-			sender_out: port sender.out_data -> out_data;
-	end my_client.impl;
-	
 	---------------------------------------------------------------------
 	
 	subprogram my_client_subprogram_receiver
 		features
-			in_data: in parameter Base_Types::Integer;
+			in_data: in parameter FullSystem::Integer_Type;
 	end my_client_subprogram_receiver;
 	
 	thread my_client_thread_receiver
 		features
-			in_data: in data port Base_Types::Integer;
+			in_data: in data port FullSystem::Integer_Type;
 	end my_client_thread_receiver;
 	
 	thread implementation my_client_thread_receiver.impl
@@ -66,7 +54,7 @@ public
 	
 	process my_client_process_receiver
 		features
-			in_data: in data port Base_Types::Integer;
+			in_data: in data port FullSystem::Integer_Type;
 	end my_client_process_receiver;
 	
 	process implementation my_client_process_receiver.impl
@@ -75,18 +63,5 @@ public
 		connections
 			receiver_in: port in_data -> receiver.in_data;
 	end my_client_process_receiver.impl;
-	
-	system my_client_receiver
-		features 
-			out_data: out data port Base_Types::Integer;
-			in_data: in data port Base_Types::Integer;
-	end my_client_receiver;
-		
-	system implementation my_client_receiver.impl
-		subcomponents
-			receiver: process my_client_process_receiver.impl;
-		connections
-			receiver_in: port in_data -> receiver.in_data;
-	end my_client_receiver.impl;
 	
 end MyClient;
