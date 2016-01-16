@@ -1,6 +1,6 @@
 package FullSystem
 public
-	with MyClient, MyServer, Data_Model;
+	with MyClient, MyServer, Data_Model, POK;
 	
 	data Integer_Type
 		properties
@@ -11,12 +11,24 @@ public
   	end client_processor;
   	
   	processor implementation client_processor.impl
+  		properties
+			POK::Slots_Allocation => ();
+			POK::Slots => (30ms);
+			POK::Scheduler => STATIC;
+			POK::Architecture => x86;
+			POK::BSP => x86_qemu;
   	end client_processor.impl;
   	
   	processor server_processor
   	end server_processor;
   	
   	processor implementation server_processor.impl
+  		properties
+			POK::Slots_Allocation => ();
+			POK::Slots => (30ms);
+			POK::Scheduler => STATIC;	
+			POK::Architecture => x86;
+			POK::BSP => x86_qemu;
   	end server_processor.impl;
 	
 	system full_system
@@ -36,6 +48,8 @@ public
 			actual_processor_binding => (reference (client_cpu)) applies to my_client;
 			actual_processor_binding => (reference (server_cpu)) applies to my_server;
 			actual_processor_binding => (reference (client_cpu)) applies to my_client_receiver;
+			POK::Architecture => x86;
+			POK::BSP => x86_qemu;
 	end full_system.impl;
 	
 end FullSystem;
